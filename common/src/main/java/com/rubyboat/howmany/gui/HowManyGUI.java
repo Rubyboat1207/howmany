@@ -15,7 +15,9 @@ import java.util.ArrayList;
 
 public class HowManyGUI {
     public static ArrayList<Identifier> trackedItems = new ArrayList<>();
+    public static ArrayList<String> scripts = new ArrayList<>();
     public static final Identifier TRACKED_ITEM_TEXTURE = new Identifier(CommonMain.MOD_ID, "textures/gui/tracked_item.png");
+    public static final Identifier TRACKED_ITEM_TEXTURE_SCRIPTED = new Identifier(CommonMain.MOD_ID, "textures/gui/tracked_item_script.png");
     public static boolean shouldToggleTracked;
 
     public static final int TOP_V = 0;
@@ -24,18 +26,27 @@ public class HowManyGUI {
     public static final int SINGLE_V = 59;
 
     public static void drawUI(DrawContext drawContext, Inventory inv) {
-        int originx = drawContext.getScaledWindowWidth() - 75;
-        int originy = drawContext.getScaledWindowHeight() / 2 - (20 * trackedItems.size()) / 2;
+        int originX = drawContext.getScaledWindowWidth() - 75;
+        int originY = drawContext.getScaledWindowHeight() / 2 - (20 * trackedItems.size()) / 2;
 
         int i = 0;
         int size = 0;
         for(var item : trackedItems) {
-            int count = inv.count(Registries.ITEM.get(item));
+            TrackedItemEntry itemEntry = new TrackedItemEntry(item);
+            itemEntry.updateCount(inv);
 
-            TrackedItemEntry itemEntry = new TrackedItemEntry(count, item);
-            int v = getV(i, trackedItems.size());
+            int v = getV(i, trackedItems.size() + scripts.size());
 
-            drawEntry(drawContext, itemEntry, originx, originy + size, v);
+            drawEntry(drawContext, itemEntry, originX, originY + size, v);
+            i++;
+            size += getHeight(v);
+        }
+        for(var script : scripts) {
+            TrackedItemEntry itemEntry = Scripting.parseScript(script, inv);
+
+            int v = getV(i, trackedItems.size() + scripts.size());
+
+            drawEntry(drawContext, itemEntry, originX, originY + size, v, TRACKED_ITEM_TEXTURE_SCRIPTED);
             i++;
             size += getHeight(v);
         }
@@ -43,14 +54,18 @@ public class HowManyGUI {
     }
 
     public static void drawEntry(DrawContext context, TrackedItemEntry entry, int x, int y, int entryType) {
+        drawEntry(context, entry, x, y, entryType, TRACKED_ITEM_TEXTURE);
+    }
+
+    public static void drawEntry(DrawContext context, TrackedItemEntry entry, int x, int y, int entryType, Identifier texture) {
         RenderSystem.setShader(GameRenderer::getRenderTypeTextSeeThroughProgram);
-        context.drawTexture(TRACKED_ITEM_TEXTURE, x, y, 0, entryType, 66, getHeight(entryType), 66, 80);
+        context.drawTexture(texture, x, y, 0, entryType, 66, getHeight(entryType), 66, 80);
 
         context.drawItem(entry.getRegisteredItem().getDefaultStack(), x + 2, y + 2);
 
 
         context.setShaderColor(1,1,1,1f);
-        context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal("x" + entry.count), x + 30, y + 6, 0xffffff, true);
+        context.drawText(MinecraftClient.getInstance().textRenderer, Text.literal("x" + entry.getCount()), x + 30, y + 6, 0xffffff, true);
     }
 
     public static void toggleItem(Item item) {

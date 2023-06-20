@@ -8,13 +8,13 @@ import org.lwjgl.glfw.GLFW;
 public class CommonMain
 {
 	public static KeyBinding TRACK_ITEM_KEYBIND = new KeyBinding(
-			"key.howmany.trackitem",
+			"key.howmany.reload",
 			InputUtil.Type.KEYSYM,
-			GLFW.GLFW_KEY_L,
+			GLFW.GLFW_KEY_R,
 			"key.category.howmany.general"
 	);
 
-	public static final boolean registerKeybind = false;
+	public static final boolean registerKeybind = true;
 
 	public static InputUtil.Key trackBindKeycode = InputUtil.Type.KEYSYM.createFromCode(GLFW.GLFW_KEY_L);
 
@@ -25,6 +25,16 @@ public class CommonMain
 			Serializer.Load();
 		}catch (Exception ignored) {
 
+		}
+	}
+
+	public static void tick() {
+		if(TRACK_ITEM_KEYBIND.wasPressed()) {
+			try {
+				Serializer.Load();
+			}catch (Exception ignored) {
+
+			}
 		}
 	}
 }

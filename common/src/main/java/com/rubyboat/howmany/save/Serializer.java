@@ -23,23 +23,35 @@ public class Serializer {
             builder.append(item.toString()).append("\n");
         }
 
+        for(var script : HowManyGUI.scripts) {
+            builder.append(script).append("\n");
+        }
+
         Files.writeString(filePath, builder);
     }
 
     public static void Load() throws IOException {
+        HowManyGUI.scripts.clear();
+        HowManyGUI.trackedItems.clear();
+
         var filePath = Path.of(saveFile);
         if(Files.exists(filePath)) {
             var list = Files.readString(filePath).trim().split("\n");
 
-            for(var identifier : list) {
-                if(identifier.isEmpty()) {
+            for(var line : list) {
+                if(line.isEmpty()) {
                     continue;
                 }
-                var id = new Identifier(identifier);
-                if(id.getPath().isEmpty()) {
+                if(line.contains("!>")) {
+                    HowManyGUI.scripts.add(line);
                     continue;
                 }
-                HowManyGUI.trackedItems.add(id);
+
+                var identifier = new Identifier(line);
+                if(identifier.getPath().isEmpty()) {
+                    continue;
+                }
+                HowManyGUI.trackedItems.add(identifier);
             }
         }
     }
