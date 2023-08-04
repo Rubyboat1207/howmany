@@ -17,15 +17,16 @@ public class FabricClientMain implements ClientModInitializer {
         HudRenderCallback.EVENT.register((DrawContext c, float tickDelta) -> {
             PlayerEntity pl = MinecraftClient.getInstance().player;
             assert pl != null;
-            HowManyGUI.drawUI(c, pl.getInventory());
+            HowManyGUI.drawUI(c, pl.getInventory(), c.getScaledWindowWidth() - 75, c.getScaledWindowHeight() / 2);
         });
 
         if(CommonMain.registerKeybind) {
-            CommonMain.TRACK_ITEM_KEYBIND = KeyBindingHelper.registerKeyBinding(CommonMain.TRACK_ITEM_KEYBIND);
+            CommonMain.RELOAD_CONFIG_KEYBIND = KeyBindingHelper.registerKeyBinding(CommonMain.RELOAD_CONFIG_KEYBIND);
+            CommonMain.OPEN_EDIT_MENU_KEYBIND = KeyBindingHelper.registerKeyBinding(CommonMain.OPEN_EDIT_MENU_KEYBIND);
         }
 
         ClientTickEvents.END_CLIENT_TICK.register((t) -> {
-            CommonMain.tick();
+            CommonMain.keybindTick();
         });
     }
 }

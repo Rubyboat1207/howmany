@@ -13,7 +13,7 @@ public class ClientEvents {
     public static class ClientForgeEvents {
         @SubscribeEvent
         public static void onKeyInput(InputEvent.Key key) {
-            HowManyGUI.shouldToggleTracked = CommonMain.TRACK_ITEM_KEYBIND.wasPressed();
+            CommonMain.keybindTick();
         }
     }
 
@@ -22,7 +22,8 @@ public class ClientEvents {
         @SubscribeEvent
         public static void onKeyRegister (RegisterKeyMappingsEvent event) {
             if(CommonMain.registerKeybind) {
-                event.register(CommonMain.TRACK_ITEM_KEYBIND);
+                event.register(CommonMain.RELOAD_CONFIG_KEYBIND);
+                event.register(CommonMain.OPEN_EDIT_MENU_KEYBIND);
             }
         }
     }

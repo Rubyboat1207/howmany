@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameOptionsMixin {
     @Inject(method = "setKeyCode", at = @At(value = "HEAD"))
     public void setKeycode(KeyBinding key, InputUtil.Key code, CallbackInfo ci) {
-        if(key == CommonMain.TRACK_ITEM_KEYBIND) {
-            CommonMain.trackBindKeycode = code;
+        if(key == CommonMain.RELOAD_CONFIG_KEYBIND) {
+//            CommonMain.trackBindKeycode = code;
         }
     }
 }

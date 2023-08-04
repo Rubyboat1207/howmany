@@ -17,6 +17,8 @@ public class ForgeOverlayBoilerplate {
     public static void onRenderGameOverlay(RenderGuiOverlayEvent e) {
         PlayerEntity pl = MinecraftClient.getInstance().player;
         assert pl != null;
-        HowManyGUI.drawUI(e.getGuiGraphics(), pl.getInventory());
+//        HowManyGUI.drawUI(e.getGuiGraphics(), pl.getInventory());
+        var c = e.getGuiGraphics();
+        HowManyGUI.drawUI(c, pl.getInventory(), c.getScaledWindowWidth() - 75, c.getScaledWindowHeight() / 2);
     }
 }
